@@ -4,6 +4,8 @@ import time
 import serial
 from PIL import Image
 
+os.system('mpremote a0 exec --no-follow "import taka"')
+
 PORT = '/dev/ttyACM0'  # Serial port connected to ESP32
 BAUD = 115200
 
@@ -16,12 +18,14 @@ try:
         im = Image.open('kuva.jpg')
         W, H = im.size
         suhde = W / 144
+        if W<2000:line=200
+        else: line=1000    
 
         raw_bytes = bytearray()
         for y in range(144):
             z = 143 - y
             px = min(int(z * suhde), W - 1)
-            r, g, b = im.getpixel((px, 100))[:3]
+            r, g, b = im.getpixel((px, line))[:3]
             raw_bytes.extend([r, g, b])
 
         # Convert raw bytes to hex string + newline (safe from Ctrl+C / Ctrl+D)
