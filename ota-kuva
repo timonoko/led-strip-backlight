@@ -1,0 +1,5 @@
+mpremote a0 reset
+sleep 2
+mpremote a0 exec "import suusi"
+mpremote a0 fs cp :kuva.jpg kuva.jpg
+display kuva.jpg
