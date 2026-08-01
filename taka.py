@@ -17,37 +17,43 @@ print("Takavalo hex serial listener ready...")
 
 prevcolo=(10000,10000,10000)
 
+flag=0
+
 while True:
     line = sys.stdin.readline()
     if line:
         line = line.strip()
         if line == "STOP":
-#            np.fill((0, 0, 0))
-#            np.write()
             micropython.kbd_intr(3)
             print("Received STOP. MicroPython REPL restored.")
             sys.exit()
         # 144 LEDs * 3 RGB bytes = 432 bytes = 864 hex characters
         elif len(line) == 864:
-            try:
-#               himmennys=5*144
-#               prevcolo=(prevcolo[0]//himmennys,prevcolo[1]//himmennys,prevcolo[2]//himmennys)
-                for zyy in range(144,144+72):
-                     np[zyy]=(0,0,10)
-                np[144+72-5]=(255,255,255)
-#                    np[zyy]=prevcolo
-#                prevcolo=(0,0,0)
+#            try:
                 data = ubinascii.unhexlify(line)
+                summa=0
+                for i in range(len(data)):
+                    summa=summa+data[i]
+                virta=summa*0.02/256 
+                dimmer=1
+                if virta>2: dimmer=int(virta/2)+2
+                print('virta,dimmer',virta,dimmer)
+                for zyy in range(144,144+72):
+                     np[zyy]=(0,0,2)
+                np[144+72-5]=(100,100,0)
                 for i in range(LEDS):
-                    r = data[i * 3] // 7
-                    g = data[i * 3 + 1] // 7
-                    b = data[i * 3 + 2] // 7
-#                    prevcolo=(prevcolo[0]+r,prevcolo[1]+g,prevcolo[2]+b)
+                    r = data[i * 3] // dimmer
+                    g = data[i * 3 + 1] // dimmer
+                    b = data[i * 3 + 2] // dimmer
                     np[i] = (r, g, b)
+                if flag>3 :
+                    flag=0
+                    np[146]=(20,0,0)
+                flag = flag+1
                 np.write()
                 np2[0]=[0,0,0]
                 np2.write()
-            except Exception:
-                print('erhe',prevcolo)
-                pass
+#            except Exception:
+#                print('erhe')
+#                pass
 
