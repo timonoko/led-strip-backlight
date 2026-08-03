@@ -4,6 +4,9 @@ import time
 import serial
 from PIL import Image
 
+
+os.system('mpremote a0 reset')
+time.sleep(3)
 os.system('mpremote a0 exec --no-follow "import taka"')
 
 PORT = '/dev/ttyACM0'  # Serial port connected to ESP32
@@ -14,6 +17,7 @@ print(f"Connected to {PORT}. Streaming hex backlight colors...")
 
 try:
     while True:
+        print('scrot')
         os.system('scrot kuva.jpg')
         im = Image.open('kuva.jpg')
         W, H = im.size
@@ -30,8 +34,11 @@ try:
 
         # Convert raw bytes to hex string + newline (safe from Ctrl+C / Ctrl+D)
         hex_line = raw_bytes.hex() + '\n'
+        print('serwrite')
+        ser = serial.Serial(PORT, BAUD)
         ser.write(hex_line.encode('ascii'))
-        time.sleep(0.03)  # ~30 FPS
+        print(W)
+        time.sleep(0.2)  # ~30 FPS
 except KeyboardInterrupt:
     print("\nStopped streaming.")
 finally:

@@ -29,14 +29,14 @@ while True:
             sys.exit()
         # 144 LEDs * 3 RGB bytes = 432 bytes = 864 hex characters
         elif len(line) == 864:
-#            try:
+            try:
                 data = ubinascii.unhexlify(line)
                 summa=0
                 for i in range(len(data)):
                     summa=summa+data[i]
                 virta=summa*0.02/256 
-                dimmer=1
-                if virta>2: dimmer=int(virta/2)+2
+                dimmer=3
+                if virta>2: dimmer=int(virta)+3
                 print('virta,dimmer',virta,dimmer)
                 for zyy in range(144,144+72):
                      np[zyy]=(0,0,2)
@@ -50,10 +50,11 @@ while True:
                     flag=0
                     np[146]=(20,0,0)
                 flag = flag+1
+                if dimmer>3:np[1]=(20,0,0)
                 np.write()
                 np2[0]=[0,0,0]
                 np2.write()
-#            except Exception:
-#                print('erhe')
-#                pass
+            except Exception:
+                print('erhe')
+                pass
 
