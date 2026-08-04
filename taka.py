@@ -26,7 +26,8 @@ while True:
         if line == "STOP":
             micropython.kbd_intr(3)
             print("Received STOP. MicroPython REPL restored.")
-            sys.exit()
+#            sys.exit()
+            machine.reset()
         # 144 LEDs * 3 RGB bytes = 432 bytes = 864 hex characters
         elif len(line) == 864:
             try:
@@ -48,7 +49,8 @@ while True:
                     np[i] = (r, g, b)
                 if flag>3 :
                     flag=0
-                    np[146]=(20,0,0)
+                    np[144+71]=(255,0,0)
+#                    np[146]=(255,0,0)
                 flag = flag+1
                 if dimmer>3:np[1]=(20,0,0)
                 np.write()

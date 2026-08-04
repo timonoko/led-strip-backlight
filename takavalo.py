@@ -5,18 +5,24 @@ import serial
 from PIL import Image
 
 
-os.system('mpremote a0 reset')
-time.sleep(3)
-os.system('mpremote a0 exec --no-follow "import taka"')
 
 PORT = '/dev/ttyACM0'  # Serial port connected to ESP32
 BAUD = 115200
 
-ser = serial.Serial(PORT, BAUD)
 print(f"Connected to {PORT}. Streaming hex backlight colors...")
 
+
+laskuri=0
 try:
     while True:
+        if laskuri==0:
+            os.system('mpremote a0 exec --no-follow "import taka"')
+            ser = serial.Serial(PORT, BAUD)
+        laskuri+=1
+        print(laskuri)
+        if laskuri>10000:
+            laskuri=0
+            ser.write(b'STOP\n')
         print('scrot')
         os.system('scrot kuva.jpg')
         im = Image.open('kuva.jpg')
@@ -48,4 +54,4 @@ finally:
     except Exception:
         pass
     ser.close()
-
+    os.system('mpremote a0 reset')
